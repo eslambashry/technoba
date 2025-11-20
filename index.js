@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { db } from "./src/DB/dataBaseConnection.js";
 import contactRoute from "./src/modules/contact_us/contact.routes.js";
 import { globalResponse } from "./src/middleware/ErrorHandeling.js";
+import blogsRouter from "./src/modules/blogs/blogs.routes.js";
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 
 
 app.use('/api/v1/contact', contactRoute)
+app.use('/api/v1/blog', blogsRouter)
 db;
 
 app.use(globalResponse);
