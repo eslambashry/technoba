@@ -8,6 +8,12 @@ import { db } from "./src/DB/dataBaseConnection.js";
 const app = express();
 const port = process.env.PORT
 
+
+app.use(cors());
+app.use(morgan("dev"));
+
+app.use(express.json());
+
 db;
 
 
