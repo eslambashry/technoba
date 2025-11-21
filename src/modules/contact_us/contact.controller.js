@@ -2,9 +2,9 @@ import { sendContactUsEmailService } from "../../services/contactEmail.js";
 import CustomError from "../../utilities/customError.js"
 
 export const sendContactUsEmail = async (req, res, next) => {
-    const { name, email, message } = req.body;
+    const { name, email,phone, message } = req.body;
 
-    if (!name || !email || !message) {
+    if (!name || !email || !phone || !message) {
       return next(new CustomError("Please provide name, email and message", 400));
     }
 
@@ -14,7 +14,7 @@ export const sendContactUsEmail = async (req, res, next) => {
       return next(new CustomError("Invalid email format", 400));
     }
 
-    await sendContactUsEmailService({ name, email, message });
+    await sendContactUsEmailService({ name, email, phone, message });
 
     return res.status(200).json({
         success: true,

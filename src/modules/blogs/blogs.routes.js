@@ -5,10 +5,140 @@ import * as BlogCon from "./blogs.controller.js";
 
 const blogsRouter = Router();
 
-blogsRouter.post('/add', multerCloudFunction(allowedExtensions.Image).array("image", 5),BlogCon.createBlog)
-blogsRouter.get('/',BlogCon.getAllBlogs)
-blogsRouter.get('/:id',BlogCon.getOneBlogs)
-blogsRouter.put('/:id',multerCloudFunction(allowedExtensions.Image).array("image", 5),BlogCon.updateBlog)
-blogsRouter.delete('/:id',BlogCon.deleteBlog)
+/**
+ * @swagger
+ * tags:
+ *   name: Blogs
+ *   description: Blog Management
+ */
+
+/**
+ * @swagger
+ * /blogs/add:
+ *   post:
+ *     summary: Create a new blog
+ *     tags: [Blogs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title_ar:
+ *                 type: string
+ *               title_en:
+ *                 type: string
+ *               content_ar:
+ *                 type: string
+ *               content_en:
+ *                 type: string
+ *               image:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Upload up to 5 images
+ *     responses:
+ *       201:
+ *         description: Blog created successfully
+ */
+
+/**
+ * @swagger
+ * /blogs:
+ *   get:
+ *     summary: Get all blogs
+ *     tags: [Blogs]
+ *     responses:
+ *       200:
+ *         description: List of all blogs
+ */
+blogsRouter.post(
+  '/add',
+  multerCloudFunction(allowedExtensions.Image).array("image", 5),
+  BlogCon.createBlog
+);
+
+/**
+ * @swagger
+ * /blogs/{id}:
+ *   get:
+ *     summary: Get a single blog
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Blog ID
+ *     responses:
+ *       200:
+ *         description: Blog data
+ */
+blogsRouter.get('/', BlogCon.getAllBlogs);
+blogsRouter.get('/:id', BlogCon.getOneBlogs);
+
+/**
+ * @swagger
+ * /blogs/{id}:
+ *   put:
+ *     summary: Update a blog
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title_ar:
+ *                 type: string
+ *               title_en:
+ *                 type: string
+ *               content_ar:
+ *                 type: string
+ *               content_en:
+ *                 type: string
+ *               image:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Upload up to 5 images
+ *     responses:
+ *       200:
+ *         description: Blog updated successfully
+ */
+blogsRouter.put(
+  '/:id',
+  multerCloudFunction(allowedExtensions.Image).array("image", 5),
+  BlogCon.updateBlog
+);
+
+/**
+ * @swagger
+ * /blogs/{id}:
+ *   delete:
+ *     summary: Delete a blog
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Blog deleted successfully
+ */
+blogsRouter.delete('/:id', BlogCon.deleteBlog);
 
 export default blogsRouter;
