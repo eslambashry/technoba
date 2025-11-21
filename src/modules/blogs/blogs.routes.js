@@ -44,9 +44,16 @@ const blogsRouter = Router();
  *         description: Blog created successfully
  */
 
+
+blogsRouter.post(
+  '/add',
+  multerCloudFunction(allowedExtensions.Image).array("image", 5),
+  BlogCon.createBlog
+);
+
 /**
  * @swagger
- * /blogs:
+ * /blogs/:
  *   get:
  *     summary: Get all blogs
  *     tags: [Blogs]
@@ -54,11 +61,7 @@ const blogsRouter = Router();
  *       200:
  *         description: List of all blogs
  */
-blogsRouter.post(
-  '/add',
-  multerCloudFunction(allowedExtensions.Image).array("image", 5),
-  BlogCon.createBlog
-);
+blogsRouter.get('/', BlogCon.getAllBlogs);
 
 /**
  * @swagger
@@ -77,7 +80,6 @@ blogsRouter.post(
  *       200:
  *         description: Blog data
  */
-blogsRouter.get('/', BlogCon.getAllBlogs);
 blogsRouter.get('/:id', BlogCon.getOneBlogs);
 
 /**

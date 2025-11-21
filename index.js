@@ -50,5 +50,81 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(globalResponse);
 
-app.get("/", (req, res) => res.send("Hello World!"));
+app.get("/", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Backend API</title>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #4e73df, #1cc88a);
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .container {
+          background: white;
+          padding: 40px;
+          border-radius: 18px;
+          width: 90%;
+          max-width: 600px;
+          text-align: center;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          animation: fadeIn 0.8s ease-in-out;
+        }
+        h1 {
+          margin-bottom: 10px;
+          color: #4e73df;
+        }
+        p {
+          margin: 8px 0;
+          font-size: 16px;
+          color: #555;
+        }
+        a {
+          display: inline-block;
+          margin-top: 15px;
+          padding: 10px 20px;
+          background: #1cc88a;
+          color: white;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+        a:hover {
+          background: #17a673;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(15px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>🚀 Backend API is Running</h1>
+        <p>Status: <strong style="color: green">Online</strong></p>
+        <p>API Version: <strong>v1.0.0</strong></p>
+        <p>Welcome to your backend server!</p>
+        <a href="/api-docs" target="_blank">📘 Open Swagger Documentation</a>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
 app.listen(port, () => console.log( "🗣 ".red+`app port is `.grey.bold  +  `${port} `.rainbow.bold+ "📡 ")); 
