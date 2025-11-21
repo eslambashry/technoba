@@ -14,7 +14,7 @@ const userRouter = Router();
 
 /**
  * @swagger
- * /users/register:
+ * /api/v1/users/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]
@@ -47,7 +47,7 @@ userRouter.post('/register', userCon.register);
 
 /**
  * @swagger
- * /users/login:
+ * /api/v1/users/login:
  *   post:
  *     summary: Login user
  *     tags: [Users]
@@ -74,7 +74,7 @@ userRouter.post('/login', userCon.login);
 
 /**
  * @swagger
- * /users:
+ * /api/v1/users:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -87,7 +87,7 @@ userRouter.get('/', userCon.getAllUsers);
 
 /**
  * @swagger
- * /users/add:
+ * /api/v1/users/add:
  *   post:
  *     summary: Add a user (Admin only)
  *     tags: [Users]
@@ -120,7 +120,7 @@ userRouter.post('/add', userCon.addUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/v1/users/{id}:
  *   put:
  *     summary: Update user data
  *     tags: [Users]
@@ -163,7 +163,7 @@ userRouter.put(
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/v1/users/{id}:
  *   delete:
  *     summary: Delete user
  *     tags: [Users]

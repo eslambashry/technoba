@@ -12,7 +12,7 @@ const contactRoute = Router();
 
 /**
  * @swagger
- * /contact/send:
+ * /api/v1/contact/send:
  *   post:
  *     summary: Send a Contact Us message
  *     tags: [Contact]

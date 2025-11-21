@@ -14,7 +14,7 @@ const blogsRouter = Router();
 
 /**
  * @swagger
- * /blogs/add:
+ * /api/v1/blogs/add:
  *   post:
  *     summary: Create a new blog
  *     tags: [Blogs]
@@ -53,7 +53,7 @@ blogsRouter.post(
 
 /**
  * @swagger
- * /blogs/:
+ * /api/v1/blogs/:
  *   get:
  *     summary: Get all blogs
  *     tags: [Blogs]
@@ -65,7 +65,7 @@ blogsRouter.get('/', BlogCon.getAllBlogs);
 
 /**
  * @swagger
- * /blogs/{id}:
+ * /api/v1/blogs/{id}:
  *   get:
  *     summary: Get a single blog
  *     tags: [Blogs]
@@ -84,7 +84,7 @@ blogsRouter.get('/:id', BlogCon.getOneBlogs);
 
 /**
  * @swagger
- * /blogs/{id}:
+ * /api/v1/blogs/{id}:
  *   put:
  *     summary: Update a blog
  *     tags: [Blogs]
@@ -127,7 +127,7 @@ blogsRouter.put(
 
 /**
  * @swagger
- * /blogs/{id}:
+ * /api/v1/blogs/{id}:
  *   delete:
  *     summary: Delete a blog
  *     tags: [Blogs]
