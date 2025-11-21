@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
     userName: { type: String, required: true },
@@ -6,6 +6,13 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     createdAt: { type: Date, default: Date.now },
+    image: {
+        imageLink: { type: String },
+        public_id: { type: String }
+    },
+    token: { type: String },
+    isActive: { type: Boolean, default: false },
+    customId: { type: String  }
 },{ timestamps: true })
 
 export const UserModel = model("User", userSchema);

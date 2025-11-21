@@ -6,6 +6,7 @@ import { db } from "./src/DB/dataBaseConnection.js";
 import contactRoute from "./src/modules/contact_us/contact.routes.js";
 import { globalResponse } from "./src/middleware/ErrorHandeling.js";
 import blogsRouter from "./src/modules/blogs/blogs.routes.js";
+import userRouter from "./src/modules/auth/auth.routes.js";
 
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use('/api/v1/contact', contactRoute)
 app.use('/api/v1/blog', blogsRouter)
+app.use('/api/v1/auth', userRouter)
 db;
 
 app.use(globalResponse);
