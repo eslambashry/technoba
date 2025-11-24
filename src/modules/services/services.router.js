@@ -61,7 +61,6 @@ servicesRouter.post(
  *       200:
  *         description: List of all services
  */
-
 servicesRouter.get("/",servicesCon.getAllServices);
 
 
@@ -82,7 +81,6 @@ servicesRouter.get("/",servicesCon.getAllServices);
  *       200:
  *         description: Service data
  */
-
 servicesRouter.get("/:id",servicesCon.getServiceById);
 
 
@@ -158,36 +156,37 @@ servicesRouter.delete("/:id",servicesCon.deleteService);
  * @swagger
  * /api/v1/services/review/{id}:
  *   post:
- *     summary: Create a service review
- *    tags: [Services]
- *   parameters:
- *    - in: path
- *    name: id
- *  required: true
- *   schema:
- *    type: string
- *  description: Service ID
- *   requestBody:
- *   required: true
- *  content:
- *   multipart/form-data:
- *    schema:
- *    type: object
- *   properties:
- *    rating:
- *    type: number
- *   review:
- *  type: string
- *  screenShots:
- *  type: array
- *   items:
- *   type: string
- *  format: binary
- *  description: Upload up to 3 screenshots
- *   responses:
- *   200:
- *   description: Review added successfully
+ *     summary: Add review to a service
+ *     tags: [Services]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Service ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: number
+ *               review:
+ *                 type: string
+ *               screenShots:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Upload up to 3 screenshots
+ *     responses:
+ *       200:
+ *         description: Review added successfully
  */
+
 servicesRouter.post(
     "/review/:id", 
     multerCloudFunction(allowedExtensions.Image).array("screenShots", 3),
