@@ -2,6 +2,8 @@ import { Router } from "express";
 import { multerCloudFunction } from "../../services/multerCloud.js";
 import { allowedExtensions } from "../../utilities/allowedExtensions.js";
 import * as BlogCon from "./blogs.controller.js";
+import { isAuth } from "../../middleware/isAuth.js";
+import { systemRoles } from "../../utilities/systemRole.js";
 
 const blogsRouter = Router();
 
@@ -46,7 +48,7 @@ const blogsRouter = Router();
 
 
 blogsRouter.post(
-  '/add',
+  '/add',isAuth([systemRoles.ADMIN]),
   multerCloudFunction(allowedExtensions.Image).array("image", 5),
   BlogCon.createBlog
 );
@@ -61,6 +63,7 @@ blogsRouter.post(
  *       200:
  *         description: List of all blogs
  */
+
 blogsRouter.get('/', BlogCon.getAllBlogs);
 
 /**
@@ -80,6 +83,7 @@ blogsRouter.get('/', BlogCon.getAllBlogs);
  *       200:
  *         description: Blog data
  */
+
 blogsRouter.get('/:id', BlogCon.getOneBlogs);
 
 /**
@@ -120,7 +124,7 @@ blogsRouter.get('/:id', BlogCon.getOneBlogs);
  *         description: Blog updated successfully
  */
 blogsRouter.put(
-  '/:id',
+  '/:id',isAuth([systemRoles.ADMIN]),
   multerCloudFunction(allowedExtensions.Image).array("image", 5),
   BlogCon.updateBlog
 );
@@ -141,6 +145,6 @@ blogsRouter.put(
  *       200:
  *         description: Blog deleted successfully
  */
-blogsRouter.delete('/:id', BlogCon.deleteBlog);
+blogsRouter.delete('/:id',isAuth([systemRoles.ADMIN]), BlogCon.deleteBlog);
 
 export default blogsRouter;

@@ -3,7 +3,7 @@ import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 import { serviceModel } from "../../DB/models/servicesModel.js";
 import CustomError from "../../utilities/customError.js";
-import imagekit from "../../utilities/imagekitConfigration.js";
+import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js";
 
 export const createService = async (req, res, next) => {
   
@@ -19,11 +19,6 @@ export const createService = async (req, res, next) => {
       serviceType,
       price,
       currency,
-      provider_name,
-      provider_url,
-      provider_logo,
-      provider_contactPhone,
-      areaServed,
       aggregateRating_ratingValue,
       aggregateRating_reviewCount
     } = req.body;
@@ -75,14 +70,9 @@ export const createService = async (req, res, next) => {
       serviceType,
       price,
       currency,
-      provider_name,
-      provider_url,
-      provider_logo,
-      provider_contactPhone,
-      areaServed: Array.isArray(areaServed) ? areaServed : [areaServed],
       images: uploadedImages,
       aggregateRating_ratingValue: aggregateRating_ratingValue || 0,
-      aggregateRating_reviewCount: aggregateRating_reviewCount || 0,
+      aggregateRating_reviewCount: aggregateRating_reviewCount || 0, 
       customId,
     });
 
@@ -104,4 +94,148 @@ export const getAllServices = async (req, res, next) => {
   } catch (err) {
     next(err);
   } 
+};
+
+export const getServiceById= async (req, res, next) => {
+
+  console.log(req.params);
+  
+    const id  = req.params.id;
+    console.log(id);
+    
+    const service = await serviceModel.findById(id);
+    if (!service) {
+      return next(new CustomError("Service not found", 404));
+    }
+    return res.status(200).json({
+      success: true,
+      service,
+    });
+  }
+
+
+export const updateService = async (req, res, next) => {
+  
+    const id  = req.params.id;
+    
+    const service = await serviceModel.findById(id);
+    if (!service) {
+      return next(new CustomError("Service not found", 404));
+    }
+    if(service.name_en !== req.body.name_en){
+      service.slug = slugify(req.body.name_en, { replacement: '_', lower: true });
+    }
+    
+    service.name_ar = req.body.name_ar || service.name_ar;
+    service.name_en = req.body.name_en ||  service.name_en;
+    service.shortDescription_ar = req.body.shortDescription_ar || service.shortDescription_ar;
+    service.shortDescription_en = req.body.shortDescription_en || service.shortDescription_en;
+    service.description_ar = req.body.description_ar || service.description_ar;
+    service.description_en = req.body.description_en || service.description_en;
+    service.serviceType = req.body.serviceType || service.serviceType;
+    service.price = req.body.price || service.price;
+    service.currency = req.body.currency || service.currency;
+
+    if(req.files && req.files.length > 0){
+      // 🔥 Upload new images to ImageKit
+  if (service.images?.public_id) {
+    await destroyImage(service.images.public_id);
+  }
+      const imageFiles = req.files;
+      const uploadedImages = [];
+      for (const file of imageFiles) {
+        const uploadResult = await imagekit.upload({
+          file: file.buffer,
+          fileName: file.originalname,
+          folder: `${process.env.PROJECT_FOLDER}/Services/${service.customId}`,
+        });
+        uploadedImages.push({
+          imageLink: uploadResult.url,
+          public_id: uploadResult.fileId,
+        });
+      }
+      console.log("Last");
+      
+    await service.save();
+    return res.status(200).json({
+      success: true,
+      message: "Service updated successfully",
+      service,
+    });
+    }
+  }
+
+export const deleteService= async (req, res, next) => {
+
+    const id  = req.params.id;
+    
+    const service = await serviceModel.findByIdAndDelete(id);
+    if (!service) {
+      return next(new CustomError("Service not found", 404));
+    }
+
+    service.images.forEach(async (image) => {
+      await destroyImage(image.public_id);
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Service deleted successfully",
+    });
+  }
+
+
+
+
+// ~ Create Review 
+export const createServiceReview = async (req, res, next) => {
+  const id = req.params.id;
+  const { authorName, rating, body } = req.body;  
+  const service = await serviceModel.findById(id);
+  if (!service) {
+    return next(new CustomError("Service not found", 404));
+  }
+  const newReview = {
+    authorName,
+    rating,
+    body,
+    screenShots: []
+  }
+
+const ratingValue = Number(service.aggregateRating_ratingValue) || 0;
+let ratingCount = Number(service.aggregateRating_reviewCount) || 0;
+const newRating = Number(req.body.rating);  // ⬅ الحل الأساسي
+
+ratingCount += 1;
+
+service.aggregateRating_ratingValue =
+  ((ratingValue * (ratingCount - 1)) + newRating) / ratingCount;
+
+service.aggregateRating_reviewCount = ratingCount;
+
+
+    if (req.files && req.files.length > 0) {
+      const imageFiles = req.files;
+      const uploadedScreenshots = [];
+      for (const file of imageFiles) {
+        const uploadResult = await imagekit.upload({
+          file: file.buffer,
+          fileName: file.originalname,
+          folder: `${process.env.PROJECT_FOLDER}/Services/${service.customId}/Reviews`,
+        });
+        uploadedScreenshots.push({
+          imageLink: uploadResult.url,
+          public_id: uploadResult.fileId,
+        });
+      }
+    newReview.screenShots = uploadedScreenshots;
+    }
+  service.reviews.push(newReview);
+    
+
+  await service.save();
+  return res.status(201).json({
+    success: true,
+    message: "Review added successfully",
+    review: newReview,
+  });
 };

@@ -15,4 +15,4 @@ const userSchema = new Schema({
     customId: { type: String  }
 },{ timestamps: true })
 
-export const UserModel = model("User", userSchema);
+export const UserModel = model("User", userSchema)

@@ -24,7 +24,6 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-
 app.use('/api/v1/contact', contactRoute)
 app.use('/api/v1/blogs', blogsRouter)
 app.use('/api/v1/users', userRouter)
@@ -35,7 +34,7 @@ const swaggerSpec = swaggerJSDoc({
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Technoba API Documentation  🚀",
+      title: "Technoba API Documentation  📡",
       version: "1.0.0",
       description: "API documentation for the Technoba backend services",
     },
@@ -52,6 +51,7 @@ const swaggerSpec = swaggerJSDoc({
   },
 apis: [
   path.join(__dirname, "./src/modules/blogs/blogs.routes.js"),
+  path.join(__dirname, "./src/modules/services/services.router.js"),
   path.join(__dirname, "./src/modules/auth/auth.routes.js"),
   path.join(__dirname, "./src/modules/contact_us/contact.routes.js")
 ]

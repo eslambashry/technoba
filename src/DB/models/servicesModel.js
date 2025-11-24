@@ -4,8 +4,13 @@ const ReviewSchema = new Schema({
   authorName: String,
   rating: { type: Number, min: 1, max: 5 },
   body: String,
-  createdAt: { type: Date, default: Date.now }
-});
+  screenShots: [
+    {
+      imageLink: String,
+      public_id: String
+    }
+  ],
+},{timestamps: true});
 
 const ServiceSchema = new Schema(
   {
@@ -28,15 +33,6 @@ const ServiceSchema = new Schema(
     serviceType: String,
     price: Number,
     currency: String,
-
-    // PROVIDER INFO
-    provider_name: String,
-    provider_url: String,
-    provider_logo: String,
-    provider_contactPhone: String,
-
-    // AREA SERVED
-    areaServed: [String],
 
     // IMAGES
     images: [
