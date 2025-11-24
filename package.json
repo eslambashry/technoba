@@ -1,14 +1,14 @@
 {
-  "name": "technoba",
+  "name": "techvoba",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/eslambashry/technoba#readme",
+  "homepage": "https://github.com/eslambashry/techvoba#readme",
   "bugs": {
-    "url": "https://github.com/eslambashry/technoba/issues"
+    "url": "https://github.com/eslambashry/techvoba/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eslambashry/technoba.git"
+    "url": "git+https://github.com/eslambashry/techvoba.git"
   },
   "license": "ISC",
   "author": "Eslam",

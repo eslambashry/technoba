@@ -20,7 +20,7 @@ export async function sendEmailService({
   })
 
   const emailInfo = await transporter.sendMail({
-    from: `"Technoba " ${process.env.SMTP_USER}`,
+    from: `"techvoba " ${process.env.SMTP_USER}`,
     to: to ? to : '',
     subject: subject ? subject : 'Contact Us Email',
     html: message ? message : '',
