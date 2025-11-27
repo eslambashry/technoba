@@ -150,6 +150,9 @@ servicesRouter.put(
 servicesRouter.delete("/:id",servicesCon.deleteService);
 
 
+servicesRouter.delete("/multy/:id",servicesCon.multyDeleteServices);
+
+
 
 // ~ Create Review 
 /**

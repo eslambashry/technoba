@@ -200,6 +200,15 @@ export const deleteService= async (req, res, next) => {
   }
 
 
+  export const multyDeleteServices = async (req, res, next) => {
+    const { ids } = req.body; // Expecting an array of IDs in the request body
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return next(new CustomError("Please provide an array of IDs to delete", 400));
+    }
+    const services = await serviceModel.find({ _id: { $in: ids } });
+    if (services.length === 0) {
+      return next(new CustomError("No services found for the provided IDs", 404));
+    }}
 
 
 // ~ Create Review 
