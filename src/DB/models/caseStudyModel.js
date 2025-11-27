@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 
 const caseStudySchema = new Schema({
@@ -8,17 +8,21 @@ const caseStudySchema = new Schema({
     institute_en: { type: String, required: true },
     description_ar: { type: String, required: true },
     description_en: { type: String, required: true },
+    category_ar: { type: String, required: true },
+    category_en: { type: String, required: true },
     status: [
     {
-        value_ar: { type: String, required: true },
-        value_en: { type: String, required: true },
+        value : { type: String, required: true },
         label_ar: { type: String, required: true },
         label_en: { type: String, required: true }
     }
     ],
+    images: [{
+        imageLink:{type: String, required: true},
+        public_id:{type: String, required: true},
+    }],
     customId: { type: String},
-    image: {
-            imageLink:{type: String, required: true},
-            public_id:{type: String, required: true},
-        },
+
 },{ timestamps: true })
+
+export const caseStudyModel = model("caseStudy", caseStudySchema);

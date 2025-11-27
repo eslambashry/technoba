@@ -3,8 +3,8 @@ import {generateToken, verifyToken} from "../../utilities/tokenFunctions.js"
 import { nanoid } from "nanoid"
 import pkg from 'bcrypt'
 import CustomError from "../../utilities/customError.js"
-import jwt from "jsonwebtoken"
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
+import jwt from "jsonwebtoken"
 import { customAlphabet } from 'nanoid';
 
 export const register = async(req,res,next) => {
@@ -36,7 +36,6 @@ export const register = async(req,res,next) => {
 
 export const login = async(req,res,next) => {
     const {email,password} = req.body
- 
      
     if(!email || !password){
         return next(new CustomError('Email And Password Is Required',  422 ))

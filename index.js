@@ -11,6 +11,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 import { globalResponse } from "./src/middleware/ErrorHandeling.js";
 import { db } from "./src/DB/dataBaseConnection.js";
 import { fileURLToPath } from "url";
+import caseStudyRouter from "./src/modules/caseStudy/caseStudy.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,7 @@ app.use('/api/v1/contact', contactRoute)
 app.use('/api/v1/blogs', blogsRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/services', servicesRouter)
+app.use('/api/v1/case_study', caseStudyRouter)
 db;
 
 const swaggerSpec = swaggerJSDoc({
