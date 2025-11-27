@@ -31,9 +31,9 @@ const values = req.body["status.value"];
 const labelsEn = req.body["status.label_en"];
 const labelsAr = req.body["status.label_ar"];
 
-if (!values || !labelsEn || !labelsAr) {
-  return next(new CustomError("Status fields are required", 400));
-}
+// if (!values || !labelsEn || !labelsAr) {
+//   return next(new CustomError("Status fields are required", 400));
+// }
 
 for (let i = 0; i < values.length; i++) {
   status.push({

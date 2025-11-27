@@ -28,6 +28,7 @@ const ServiceSchema = new Schema(
       feature_ar: String, 
       feature_en: String
     }],
+
     // 🔥 SHORT DESCRIPTION
     shortDescription_ar: { type: String },
     shortDescription_en: { type: String },
@@ -55,7 +56,7 @@ const ServiceSchema = new Schema(
     // AGGREGATE RATING
     aggregateRating_ratingValue: Number,
     aggregateRating_reviewCount: Number,
-    customId: { type: String, unique: true },
+    customId: { type: String},
     createdAt: { type: Date, default: Date.now }
   },
   { timestamps: true }
