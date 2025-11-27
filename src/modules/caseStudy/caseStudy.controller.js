@@ -5,8 +5,6 @@ import CustomError from "../../utilities/customError.js";
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js";
 
 export const createCaseStudy = async (req, res, next) => {
-  console.log(req.body);
-  
   try {
     const {
       title_ar,
@@ -17,38 +15,20 @@ export const createCaseStudy = async (req, res, next) => {
       description_en,
       category_ar,
       category_en,
+      status
     } = req.body;
 
+    // Validate required fields
     if (!title_ar || !title_en || !institute_ar || !institute_en ||
       !description_ar || !description_en || !category_ar || !category_en) {
       return next(new CustomError("All fields are required", 400));
     }
 
-    // --- Build status array ---
-let status = [];
+    // --- FIXED STATUS HANDLING ---
+    if (!Array.isArray(status) || status.length === 0) {
+      return next(new CustomError("Status fields are required", 400));
+    }
 
-const values = req.body["status.value"];
-const labelsEn = req.body["status.label_en"];
-const labelsAr = req.body["status.label_ar"];
-
-console.log(values);
-console.log(labelsEn);
-console.log(labelsAr);
-
-
-
-if (!values || !labelsEn || !labelsAr) {
-  return next(new CustomError("Status fields are required", 400));
-}
-console.log(status.value);
-
-for (let i = 0; i < values.length; i++) {
-  status.push({
-    value: values[i],
-    label_en: labelsEn[i],
-    label_ar: labelsAr[i],
-  });
-}
     const customId = nanoid();
 
     // Validate images
@@ -57,7 +37,7 @@ for (let i = 0; i < values.length; i++) {
       return next(new CustomError("At least 1 image is required", 400));
     }
 
-    // Upload multiple images
+    // Upload images
     const uploadedImages = [];
 
     for (const file of files) {
@@ -73,7 +53,7 @@ for (let i = 0; i < values.length; i++) {
       });
     }
 
-    // CREATE Case Study Document
+    // Create Case Study
     const newCaseStudy = new caseStudyModel({
       title_ar,
       title_en,
@@ -83,7 +63,7 @@ for (let i = 0; i < values.length; i++) {
       description_en,
       category_ar,
       category_en,
-      status: status,
+      status,           // 👈 Already correct
       customId,
       images: uploadedImages,
     });
@@ -100,6 +80,7 @@ for (let i = 0; i < values.length; i++) {
     next(error);
   }
 };
+
 
 export const getAllCaseStudies = async (req, res, next) => {
     const caseStudies = await caseStudyModel.find();
