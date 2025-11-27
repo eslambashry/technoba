@@ -33,9 +33,6 @@ const labelsAr = req.body["status.label_ar"];
 
 
 
-if (!values || !labelsEn || !labelsAr) {
-  return next(new CustomError("Status fields are required", 400));
-}
 console.log(values.length);
 
 const valuesArr = Array.isArray(values) ? values : [values];
