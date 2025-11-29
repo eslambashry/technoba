@@ -187,3 +187,27 @@ export const deleteBlog = async (req, res, next) => {
         message: "Blog deleted successfully"
     });
 }
+
+export const multyDeleteblogs = async (req, res, next) => {
+  const { ids } = req.body; // Expecting an array of IDs in the request body
+  
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return next(new CustomError("Please provide an array of IDs to delete", 400));
+  }
+  const Blogs = await BlogsModel.find({ _id: { $in: ids } });
+  
+  if (Blogs.length === 0) {
+    return next(new CustomError("No Blogs found for the provided IDs", 404));
+  }
+  
+  for (const blog of Blogs) {
+    blog.images.forEach(async (image) => {
+      await destroyImage(image.public_id);
+    });
+    await BlogsModel.findByIdAndDelete(blog._id);
+  }
+  return res.status(200).json({
+    success: true,
+    message: "Blogs deleted successfully",
+  });
+}

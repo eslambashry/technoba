@@ -167,6 +167,28 @@ export const deleteCaseStudy = async (req, res, next) => {
   }
 };
 
+
+export const multyDeleteCaseStudy = async (req, res, next) => {
+  const { ids } = req.body; // Expecting an array of IDs in the request body
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return next(new CustomError("Please provide an array of IDs to delete", 400));
+  }
+  const caseStudies = await caseStudyModel.find({ _id: { $in: ids } });
+  if (caseStudies.length === 0) {
+    return next(new CustomError("No Case Studies found for the provided IDs", 404));
+  }
+  for (const caseStudy of caseStudies) {
+    caseStudy.images.forEach(async (image) => {
+      await destroyImage(image.public_id);
+    });
+    await caseStudyModel.findByIdAndDelete(caseStudy._id);
+  }
+  return res.status(200).json({
+    success: true,
+    message: "caseStudies deleted successfully",
+  });
+}
+
 export const getAllArabicCaseStudies = async (req, res, next) => {
     const caseStudies = await caseStudyModel.find().select('title_ar institute_ar description_ar category_ar images status createdAt updatedAt');
     return res.status(200).json({

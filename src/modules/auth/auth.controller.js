@@ -6,6 +6,8 @@ import CustomError from "../../utilities/customError.js"
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import jwt from "jsonwebtoken"
 import { customAlphabet } from 'nanoid';
+import { emailTemplate } from "../../utilities/emailTemplate.js"
+import { sendEmailService } from "../../services/sendEmail.js"
 
 export const register = async(req,res,next) => {
     
@@ -208,52 +210,113 @@ export const deleteUser = async(req,res,next) => {
     res.status(201).json({message:"User",user})
 }
 
-// export const logout = async (req, res, next) => {
-//     try {
-//       const { token } = req.body;
-//       if (!token) {
-//         return res.status(400).json({ message: "Token is required" });
-//       }
+export const logout = async (req, res, next) => {
+    try {
+      const { token } = req.body;
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
   
-//       let decoded;
-//       try {
-//         decoded = jwt.verify(token, process.env.SIGN_IN_TOKEN_SECRET);
-//       } catch (error) {
-//         if (error.name === "TokenExpiredError") {
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.SIGN_IN_TOKEN_SECRET);
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
 
-//             decoded = jwt.decode(token);
-//         } else {
-//             console.log(error);
+            decoded = jwt.decode(token);
+        } else {
+            console.log(error);
             
-//           return res.status(401).json({ message: "Invalid token" });
-//         }
-//       }
+          return res.status(401).json({ message: "Invalid token" });
+        }
+      }
   
-//       if (!decoded || !decoded.email) {
-//         return res.status(401).json({ message: "Invalid token" });
-//       }
+      if (!decoded || !decoded.email) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
   
-//       const email = decoded.email;
+      const email = decoded.email;
   
-//       // console.log("Decoded email:", email);
+      // console.log("Decoded email:", email);
   
-//       // البحث عن المستخدم
-//       const user = await UserModel.findOne({ email });
+      // البحث عن المستخدم
+      const user = await UserModel.findOne({ email });
   
-//       if (!user) {
-//         return res.status(404).json({ message: "User not found" });
-//       }
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
   
-//       // تحديث حالة المستخدم إلى "offline" حتى لو كان التوكن منتهي الصلاحية
-//       await UserModel.findOneAndUpdate(
-//         { email },
-//         { token: null, isActive:false },
-//         { new: true }
-//       );
+      // تحديث حالة المستخدم إلى "offline" حتى لو كان التوكن منتهي الصلاحية
+      await UserModel.findOneAndUpdate(
+        { email },
+        { token: null, isActive:false },
+        { new: true }
+      );
   
-//       res.status(200).json({ message: "Logout successful" });
-//     } catch (error) {
-//       console.error("Logout Error:", error);
-//       res.status(500).json({ message: "Internal server error" });
-//     }
-//   };
+      res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+      console.error("Logout Error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  export const forgetPassword = async(req,res,next) => {
+    const {email} = req.body
+
+    const isExist = await UserModel.findOne({email})
+    if(!isExist){
+        return res.status(400).json({message: "Email not found"})
+    }
+
+    const code = nanoid()
+    const hashcode = pkg.hashSync(code, process.env.SALT_ROUNDS) // ! process.env.SALT_ROUNDS
+    const token = generateToken({
+        payload:{
+            email,
+            sendCode:hashcode,
+        },
+        signature: process.env.RESET_TOKEN, // ! process.env.RESET_TOKEN
+        expiresIn: '1h',
+    })
+    const resetPasswordLink = `${req.protocol}://${req.headers.host}/auth/reset/${token}`
+    const isEmailSent = sendEmailService({
+        to:email,
+        subject: "Reset Password",
+        message: emailTemplate({
+            link:resetPasswordLink,
+            linkData:"Click Here Reset Password",
+            subject: "Reset Password",
+        }),
+    })
+    if(!isEmailSent){
+        return res.status(400).json({message:"Email not found"})
+    }
+
+    const userupdete = await UserModel.findOneAndUpdate(
+        {email},
+        {forgetCode:hashcode},
+        {new: true},
+    )
+    return res.status(200).json({message:"password changed",userupdete})
+}
+
+export const resetPassword = async(req,res,next) => {
+    const {token} = req.params
+    const decoded = verifyToken({token, signature: process.env.RESET_TOKEN}) // ! process.env.RESET_TOKEN
+    const user = await UserModel.findOne({
+        email: decoded?.email,
+        fotgetCode: decoded?.sentCode
+    })
+
+    if(!user){
+        return res.status(400).json({message: "you are alreade reset it , try to login"})
+    }
+
+    const {newPassword} = req.body
+
+    user.password = newPassword,
+    user.forgetCode = null
+
+    const updatedUser = await user.save()
+    res.status(200).json({message: "Done",updatedUser})
+}

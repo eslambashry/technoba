@@ -69,6 +69,7 @@ blogsRouter.post(
 
 blogsRouter.get('/', BlogCon.getAllBlogs);
 
+
 /**
  * @swagger
  * /api/v1/blogs/{id}:
@@ -149,6 +150,8 @@ blogsRouter.put(
  *         description: Blog deleted successfully
  */
 blogsRouter.delete('/:id', BlogCon.deleteBlog);
+
+blogsRouter.post('/multy', BlogCon.multyDeleteblogs);
 
 export default blogsRouter;
 

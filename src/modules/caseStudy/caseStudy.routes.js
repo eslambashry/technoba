@@ -11,6 +11,7 @@ caseStudyRouter.get('/:id', caseStudyCon.getCaseStudyById)
 caseStudyRouter.put('/:id',multerCloudFunction(allowedExtensions.Image).array("images", 5),
 caseStudyCon.updateCaseStudy)
 caseStudyRouter.delete('/:id', caseStudyCon.deleteCaseStudy)
+caseStudyRouter.post('/multy', caseStudyCon.multyDeleteCaseStudy)
 
 caseStudyRouter.get('/ar', caseStudyCon.getAllArabicCaseStudies)
 caseStudyRouter.get('/en', caseStudyCon.getAllEnglishCaseStudies)

@@ -180,4 +180,10 @@ userRouter.put(
 userRouter.delete('/:id', userCon.deleteUser);
 
 
+
+userRouter.post('/forget',userCon.forgetPassword)
+
+userRouter.post('/reset/:token',userCon.resetPassword)
+
+
 export default userRouter;
