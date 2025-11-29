@@ -44,7 +44,7 @@ export const getCareers = async (req, res,next) => {
         const careers = await careerModel.find();   
         
 
-        if (careers.length === 0) {
+        if (!careers) {
             return next(new CustomError("No careers found", 404));
         }
 

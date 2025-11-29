@@ -5,7 +5,6 @@ import pkg from 'bcrypt'
 import CustomError from "../../utilities/customError.js"
 import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js"
 import jwt from "jsonwebtoken"
-import { customAlphabet } from 'nanoid';
 import { emailTemplate } from "../../utilities/emailTemplate.js"
 import { sendEmailService } from "../../services/sendEmail.js"
 
@@ -126,7 +125,7 @@ export const addUser = async (req, res, next) => {
     email,
     password: hashedPassword,
     role,
-    isActive:true,
+    isActive:"Active",
     customId,
   });
 
@@ -183,7 +182,7 @@ export const UpdateUser = async(req,res,next) => {
           if(userName) user.userName = userName
           if(email) user.email = email
           if(role) user.role = role
-          if(isActive) user.isActive = isActive
+          if(isActive) user.isActive = "Not Active"
 
           if(password) {
             const hashedPassword = pkg.hashSync(password, +process.env.SALT_ROUNDS)
@@ -194,7 +193,6 @@ export const UpdateUser = async(req,res,next) => {
           await user.save()
           res.status(200).json({message : "user updated successfully",user})      
 }
-
 
 export const deleteUser = async(req,res,next) => {
     const {id} = req.params
@@ -258,7 +256,7 @@ export const logout = async (req, res, next) => {
       console.error("Logout Error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
-  };
+}
 
   export const forgetPassword = async(req,res,next) => {
     const {email} = req.body
@@ -313,10 +311,43 @@ export const resetPassword = async(req,res,next) => {
     }
 
     const {newPassword} = req.body
-
-    user.password = newPassword,
+    const hashedPassword = pkg.hashSync(newPassword, +process.env.SALT_ROUNDS)
+    user.password = hashedPassword,
     user.forgetCode = null
 
     const updatedUser = await user.save()
     res.status(200).json({message: "Done",updatedUser})
+}
+
+export const changePassword = async(req,res,next) => {
+  const {email, newPassword} = req.body
+
+  const userExsist = await UserModel.findOne({email:email})
+
+  if(!userExsist){
+    return next(new CustomError("All fields are required", 400));
+  }
+    const hashedPassword = pkg.hashSync(newPassword, +process.env.SALT_ROUNDS)
+
+  userExsist.password = hashedPassword
+  res.status(200).json({success:true,message:"Password Changed",userExsist})
+}
+
+export const multyDeleteUsers = async (req, res,next) => {
+    const { ids } = req.body; // Expecting an array of IDs in the request body
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return next(new CustomError("Please provide an array of IDs to delete", 400));
+    }
+
+    const Users = await UserModel.find({ _id: { $in: ids } });
+
+    if (Users.length === 0) {
+      return next(new CustomError("No Users found for the provided IDs", 404));
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Users deleted successfully",
+    });
 }

@@ -71,7 +71,6 @@ userRouter.post('/register', userCon.register);
  */
 userRouter.post('/login', userCon.login);
 
-
 /**
  * @swagger
  * /api/v1/users:
@@ -83,7 +82,6 @@ userRouter.post('/login', userCon.login);
  *         description: List of all users
  */
 userRouter.get('/', userCon.getAllUsers);
-
 
 /**
  * @swagger
@@ -116,7 +114,6 @@ userRouter.get('/', userCon.getAllUsers);
  *         description: User added successfully
  */
 userRouter.post('/add', userCon.addUser);
-
 
 /**
  * @swagger
@@ -160,7 +157,6 @@ userRouter.put(
   userCon.UpdateUser
 );
 
-
 /**
  * @swagger
  * /api/v1/users/{id}:
@@ -177,13 +173,15 @@ userRouter.put(
  *       200:
  *         description: User deleted successfully
  */
+
 userRouter.delete('/:id', userCon.deleteUser);
-
-
 
 userRouter.post('/forget',userCon.forgetPassword)
 
 userRouter.post('/reset/:token',userCon.resetPassword)
-
+userRouter.post('/change_password',userCon.changePassword)
+userRouter.post('/multy',userCon.multyDeleteUsers)
 
 export default userRouter;
+
+
