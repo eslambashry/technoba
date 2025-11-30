@@ -143,7 +143,7 @@ export const updateBlog = async (req, res, next) => {
 
     if (req.files && req.files.length > 0) {
         // Delete old images from ImageKit
-        for (const img of blog.image) {
+        for (const img of blog.images) {
             await imagekit.deleteFile(img.public_id);
         }   
         const uploadedImages = [];

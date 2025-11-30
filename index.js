@@ -13,6 +13,7 @@ import { db } from "./src/DB/dataBaseConnection.js";
 import { fileURLToPath } from "url";
 import caseStudyRouter from "./src/modules/caseStudy/caseStudy.routes.js";
 import careerRouter from "./src/modules/jobs/jobs.routes.js";
+import applyRouter from "./src/modules/apply_form/apply.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,7 @@ app.use('/api/v1/users', userRouter)
 app.use('/api/v1/services', servicesRouter)
 app.use('/api/v1/case_study', caseStudyRouter)
 app.use('/api/v1/career', careerRouter)
+app.use('/api/v1/apply', applyRouter)
 db;
 
 const swaggerSpec = swaggerJSDoc({

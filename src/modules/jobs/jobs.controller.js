@@ -4,7 +4,6 @@ import CustomError from "../../utilities/customError.js";
 
 
 export const createCareer = async (req, res,next) => {
-    console.log("swsa");
     console.log(req.body);
     
     try {
